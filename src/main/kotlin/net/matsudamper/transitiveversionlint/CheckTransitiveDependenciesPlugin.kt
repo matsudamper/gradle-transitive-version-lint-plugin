@@ -42,21 +42,27 @@ class CheckTransitiveDependenciesPlugin : Plugin<Project> {
 
                 configurationSnapshots.set(
                     provider {
-                        check(pluginManager.hasPlugin("com.android.application")) {
-                            "${project.path} is not an Android application project"
+                        val runtimeConfigurations = target.configurations.filter { config ->
+                            // JVM: runtimeClasspath, Android: *ReleaseRuntimeClasspath
+                            config.name == "runtimeClasspath" ||
+                                config.name.endsWith("releaseRuntimeClasspath") ||
+                                config.name.endsWith("ReleaseRuntimeClasspath")
+                        }
+                        check(runtimeConfigurations.isNotEmpty()) {
+                            "${project.path} has no runtimeClasspath or *ReleaseRuntimeClasspath configuration. " +
+                                "Apply a JVM plugin (e.g. java, org.jetbrains.kotlin.jvm) or com.android.application."
                         }
 
                         val configurations = run {
-                            val releaseRuntimeConfigurations = target.configurations.filter { config ->
-                                config.name.endsWith("releaseRuntimeClasspath") || config.name.endsWith("ReleaseRuntimeClasspath")
-                            }
                             val pluginConfigurations = target.buildscript.configurations
                                 .plus(target.rootProject.buildscript.configurations)
                                 .filter { config ->
                                     config.name == "classpath"
                                 }
-                            releaseRuntimeConfigurations
+                            runtimeConfigurations
                                 .plus(pluginConfigurations)
+                                // ルートプロジェクトに適用した場合、buildscript の classpath が重複する
+                                .distinct()
                         }
 
                         createConfigurationSnapshots(configurations)

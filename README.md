@@ -1,15 +1,14 @@
 # gradle-transitive-version-lint-plugin
 
 指定したライブラリのバージョンが、推移的依存によって意図せず変わっていないかを検証する Gradle プラグインです。
-Android アプリケーションモジュール(`com.android.application`)向けです。
+JVM(`java`、`org.jetbrains.kotlin.jvm` など)と Android のモジュールで使えます。
 
 ## 使い方
 
-Android アプリケーションモジュールの `build.gradle.kts` にプラグインを適用し、バージョンを固定したいライブラリを指定します。
+モジュールの `build.gradle.kts` にプラグインを適用し、バージョンを固定したいライブラリを指定します。
 
 ```kotlin
 plugins {
-    id("com.android.application")
     id("net.matsudamper.transitiveversionlint") version "<version>"
 }
 
@@ -31,7 +30,7 @@ checkTransitiveDependencies {
 
 ## 検知する内容
 
-`verifyTransitiveDependencies` タスクは `*ReleaseRuntimeClasspath` と buildscript の `classpath` を対象に、
+`verifyTransitiveDependencies` タスクは `runtimeClasspath`(JVM)、`*ReleaseRuntimeClasspath`(Android)と buildscript の `classpath` を対象に、
 指定したライブラリごとに以下をチェックします。
 
 | エラー | 内容 |
