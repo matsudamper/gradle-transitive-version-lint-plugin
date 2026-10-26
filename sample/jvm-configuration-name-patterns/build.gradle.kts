@@ -6,7 +6,7 @@ plugins {
 // configurationNamePatterns で指定した testRuntimeClasspath の問題を検知することを verifySample で確認する
 dependencies {
     // OkHttp 4.12.0 は okio 3.6.0 を取り込むため、直接宣言した 3.0.0 から推移的依存でバージョンが上がる。
-    testImplementation("com.squareup.okio:okio:3.0.0")
+    testImplementation("com.squareup.okio:okio:3.18.2")
     testImplementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
 
@@ -15,7 +15,7 @@ checkTransitiveDependencies {
     ignoreFailures = true
     configurationNamePatterns.set(listOf("runtimeClasspath", "testRuntimeClasspath"))
     fixedLibraryString.addAll(
-        "com.squareup.okio:okio:3.0.0",
+        "com.squareup.okio:okio:3.18.2",
     )
 }
 
