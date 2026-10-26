@@ -31,7 +31,6 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
         val taskName = "${buildTreePath.get()}:${this.name}"
         val file = reportFile.get().asFile
 
-        file.parentFile.deleteRecursively()
         file.parentFile.mkdirs()
 
         val errors = getErrors(
