@@ -72,6 +72,10 @@ class CheckTransitiveDependenciesPlugin : Plugin<Project> {
             val dependencies = configuration.incoming.resolutionResult.allDependencies
                 .filterIsInstance<ResolvedDependencyResult>()
                 .filter { dep ->
+                    // constraints や BOM、Gradle が付ける strictly 制約は依存の宣言ではない
+                    !dep.isConstraint
+                }
+                .filter { dep ->
                     // 外部ライブラリ
                     dep.selected.id is ModuleComponentIdentifier
                 }
