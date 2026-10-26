@@ -1,9 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.plugin.compatibility.compatibility
 
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "2.0.0"
+    id("com.gradle.plugin-publish") version "2.2.1"
 }
 
 group = "net.matsudamper.transitiveversionlint"
@@ -31,6 +32,11 @@ gradlePlugin {
             displayName = "Transitive Version Lint"
             description = "Verifies that specified library versions are not unintentionally changed by transitive dependencies."
             tags = listOf("dependencies", "lint", "transitive")
+            compatibility {
+                features {
+                    configurationCache = true
+                }
+            }
         }
     }
 }
