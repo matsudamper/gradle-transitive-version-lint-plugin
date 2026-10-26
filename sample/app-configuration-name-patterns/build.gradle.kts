@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "net.matsudamper.transitiveversionlint.sample.debugerror"
+    namespace = "net.matsudamper.transitiveversionlint.sample.configurationnamepatterns"
     compileSdk = 36
     defaultConfig {
         minSdk = 24
