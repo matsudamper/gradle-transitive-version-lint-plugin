@@ -24,6 +24,15 @@ open class CheckTransitiveDependenciesExtension @Inject constructor(
         objects.listProperty(MinimalExternalModuleDependency::class.java)
             .convention(listOf())
 
+    /**
+     * 検証対象の configuration 名の正規表現。名前全体に一致したものが対象になる。
+     * デフォルトは JVM の runtimeClasspath と Android の *ReleaseRuntimeClasspath
+     */
+    @Input
+    val configurationNamePatterns: ListProperty<String> =
+        objects.listProperty(String::class.java)
+            .convention(listOf("runtimeClasspath", ".*[rR]eleaseRuntimeClasspath"))
+
     @Input
     val reportPath: Property<File> =
         objects.property(File::class.java)

@@ -42,15 +42,15 @@ class CheckTransitiveDependenciesPlugin : Plugin<Project> {
 
                 configurationSnapshots.set(
                     provider {
+                        val patterns = thisExtension.configurationNamePatterns.get()
+                        val nameRegexes = patterns.map { Regex(it) }
                         val runtimeConfigurations = target.configurations.filter { config ->
-                            // JVM: runtimeClasspath, Android: *ReleaseRuntimeClasspath
-                            config.name == "runtimeClasspath" ||
-                                config.name.endsWith("releaseRuntimeClasspath") ||
-                                config.name.endsWith("ReleaseRuntimeClasspath")
+                            config.isCanBeResolved && nameRegexes.any { it.matches(config.name) }
                         }
                         check(runtimeConfigurations.isNotEmpty()) {
-                            "${project.path} has no runtimeClasspath or *ReleaseRuntimeClasspath configuration. " +
-                                "Apply a JVM plugin (e.g. java, org.jetbrains.kotlin.jvm) or com.android.application."
+                            "${project.path} has no configuration matching $patterns. " +
+                                "Apply a JVM plugin (e.g. java, org.jetbrains.kotlin.jvm) or an Android plugin, " +
+                                "or set checkTransitiveDependencies.configurationNamePatterns."
                         }
 
                         val configurations = run {

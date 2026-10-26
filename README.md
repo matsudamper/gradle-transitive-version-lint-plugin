@@ -42,6 +42,21 @@ checkTransitiveDependencies {
 結果は `build/reports/transitive-dependencies/report.txt` に出力されます。
 `ignoreFailures = true` にすると、エラーがあってもタスクを失敗させず、レポートの出力と警告のみ行います。
 
+### 対象の configuration を変更する
+
+`configurationNamePatterns` に正規表現を指定すると、名前全体が一致する configuration を対象にできます。
+`set` するとデフォルト(`runtimeClasspath`、`.*[rR]eleaseRuntimeClasspath`)を置き換えるため、必要ならデフォルトも含めてください。
+buildscript の `classpath` は常に対象です。
+
+```kotlin
+checkTransitiveDependencies {
+    // release に加えて staging ビルドタイプも検証する
+    configurationNamePatterns.set(
+        listOf(".*[rR]eleaseRuntimeClasspath", ".*[sS]tagingRuntimeClasspath"),
+    )
+}
+```
+
 ## サンプル
 
 [`sample`](sample) 
