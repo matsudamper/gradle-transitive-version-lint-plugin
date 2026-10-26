@@ -20,18 +20,17 @@ checkTransitiveDependencies {
     // Version Catalog のエントリも指定できる
     fixedLibrary.add(libs.okhttp)
 
-    // 以下は任意
+    // 以下は任意。値はデフォルト
 
     // 検証対象の configuration 名の正規表現。名前全体が一致したものが対象になる
-    // デフォルト: runtimeClasspath(JVM)、.*[rR]eleaseRuntimeClasspath(Android)
-    // set するとデフォルトを置き換えるため、必要ならデフォルトも含める。buildscript の classpath は常に対象
+    // runtimeClasspath は JVM、.*[rR]eleaseRuntimeClasspath は Android 向け。buildscript の classpath は常に対象
     configurationNamePatterns.set(
-        listOf(".*[rR]eleaseRuntimeClasspath", ".*[sS]tagingRuntimeClasspath"),
+        listOf("runtimeClasspath", ".*[rR]eleaseRuntimeClasspath"),
     )
-    // true にすると、エラーがあってもタスクを失敗させず、レポートの出力と警告のみ行う。デフォルト: false
-    ignoreFailures = true
-    // レポートの出力先。デフォルト: build/reports/transitive-dependencies/report.txt
-    reportPath = file("transitive-dependencies-report.txt")
+    // true にすると、エラーがあってもタスクを失敗させず、レポートの出力と警告のみ行う
+    ignoreFailures = false
+    // レポートの出力先
+    reportPath = layout.buildDirectory.file("reports/transitive-dependencies/report.txt").get().asFile
 }
 ```
 
