@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "サンプルの依存バージョンは検証の前提なので更新しない",
+      "matchFileNames": [
+        "sample/app-success/**",
+        "sample/app-transitive-error/**"
+      ],
+      "enabled": false
+    }
+  ]
+}
