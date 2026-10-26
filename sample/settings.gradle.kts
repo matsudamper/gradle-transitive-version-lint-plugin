@@ -20,4 +20,6 @@ rootProject.name = "sample"
 
 include(":app-success")
 include(":app-transitive-error")
+include(":app-debug-transitive-error")
 include(":jvm-success")
+include(":jvm-transitive-error")
