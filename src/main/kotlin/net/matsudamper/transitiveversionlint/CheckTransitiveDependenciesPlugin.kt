@@ -32,6 +32,7 @@ class CheckTransitiveDependenciesPlugin : Plugin<Project> {
                     "reports/transitive-dependencies/report.txt",
                 )
                 reportFile.set(reportFileValue)
+                ignoreFailures.set(thisExtension.ignoreFailures)
 
                 fixedLibraries.set(
                     thisExtension.fixedLibraryString.zip(thisExtension.fixedLibrary) { strings, deps ->

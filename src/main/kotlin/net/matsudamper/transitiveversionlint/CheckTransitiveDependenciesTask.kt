@@ -23,6 +23,9 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
     @get:Input
     abstract val buildTreePath: Property<String>
 
+    @get:Input
+    abstract val ignoreFailures: Property<Boolean>
+
     @TaskAction
     fun check() {
         val taskName = "${buildTreePath.get()}:${this.name}"
@@ -46,7 +49,11 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
                 throwable.message.orEmpty(),
             )
 
-            throw throwable
+            if (ignoreFailures.get()) {
+                logger.warn(throwable.message)
+            } else {
+                throw throwable
+            }
         } else {
             val report = buildString {
                 appendLine("Complete $taskName")

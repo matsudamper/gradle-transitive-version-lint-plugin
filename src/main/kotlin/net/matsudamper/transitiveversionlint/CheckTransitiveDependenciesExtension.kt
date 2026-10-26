@@ -27,4 +27,12 @@ open class CheckTransitiveDependenciesExtension @Inject constructor(
     @Input
     val reportPath: Property<File> =
         objects.property(File::class.java)
+
+    /**
+     * true の場合、エラーがあってもタスクを失敗させずにレポートの出力と警告のみ行う
+     */
+    @Input
+    val ignoreFailures: Property<Boolean> =
+        objects.property(Boolean::class.java)
+            .convention(false)
 }

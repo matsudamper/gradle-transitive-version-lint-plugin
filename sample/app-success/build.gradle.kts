@@ -23,3 +23,9 @@ checkTransitiveDependencies {
         "com.squareup.okhttp3:okhttp:4.12.0",
     )
 }
+
+// エラーがあれば verifyTransitiveDependencies が失敗する
+tasks.register("verifySample") {
+    group = "verification"
+    dependsOn("verifyTransitiveDependencies")
+}
