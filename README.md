@@ -19,6 +19,19 @@ checkTransitiveDependencies {
     )
     // Version Catalog のエントリも指定できる
     fixedLibrary.add(libs.okhttp)
+
+    // 以下は任意
+
+    // 検証対象の configuration 名の正規表現。名前全体が一致したものが対象になる
+    // デフォルト: runtimeClasspath(JVM)、.*[rR]eleaseRuntimeClasspath(Android)
+    // set するとデフォルトを置き換えるため、必要ならデフォルトも含める。buildscript の classpath は常に対象
+    configurationNamePatterns.set(
+        listOf(".*[rR]eleaseRuntimeClasspath", ".*[sS]tagingRuntimeClasspath"),
+    )
+    // true にすると、エラーがあってもタスクを失敗させず、レポートの出力と警告のみ行う。デフォルト: false
+    ignoreFailures = true
+    // レポートの出力先。デフォルト: build/reports/transitive-dependencies/report.txt
+    reportPath = file("transitive-dependencies-report.txt")
 }
 ```
 
@@ -38,24 +51,6 @@ checkTransitiveDependencies {
 | `Transitive Dependencies Detected` | 最終的に解決されたバージョンが指定バージョンと異なる |
 | `Multiple Versions Detected` | プロジェクト内のモジュールから異なるバージョンが直接宣言されている |
 | `Library Not Used` | 依存グラフに存在しない、またはどのモジュールからも直接宣言されていない |
-
-結果は `build/reports/transitive-dependencies/report.txt` に出力されます。
-`ignoreFailures = true` にすると、エラーがあってもタスクを失敗させず、レポートの出力と警告のみ行います。
-
-### 対象の configuration を変更する
-
-`configurationNamePatterns` に正規表現を指定すると、名前全体が一致する configuration を対象にできます。
-`set` するとデフォルト(`runtimeClasspath`、`.*[rR]eleaseRuntimeClasspath`)を置き換えるため、必要ならデフォルトも含めてください。
-buildscript の `classpath` は常に対象です。
-
-```kotlin
-checkTransitiveDependencies {
-    // release に加えて staging ビルドタイプも検証する
-    configurationNamePatterns.set(
-        listOf(".*[rR]eleaseRuntimeClasspath", ".*[sS]tagingRuntimeClasspath"),
-    )
-}
-```
 
 ## サンプル
 
