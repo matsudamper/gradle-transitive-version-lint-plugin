@@ -89,7 +89,9 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
                 is Errors.TransitiveDependencies -> {
                     buildString {
                         appendLine("Transitive Dependencies Detected: ${error.requestLibrary}")
-                        appendLine("Resolved Version: ${error.resolvedVersion}")
+                        for (resolvedVersion in error.resolvedVersions) {
+                            appendLine("Resolved Version: ${resolvedVersion.version} (${resolvedVersion.configuration})")
+                        }
                     }.trim()
                 }
             }
@@ -113,12 +115,12 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
                 val fixedName = targetLibrary.split(":")[1]
                 val fixedVersion = targetLibrary.split(":")[2]
 
-                val resolvedVersion = getTransitiveVersion(
+                val resolvedVersions = getTransitiveVersions(
                     configurations = configurations,
                     fixedGroup = fixedGroup,
                     fixedName = fixedName,
                 )
-                if (resolvedVersion == null) {
+                if (resolvedVersions.isEmpty()) {
                     errors.add(
                         Errors.LibraryNotUsed(
                             fixedLibrary = targetLibrary,
@@ -161,11 +163,12 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
                     }
                 }
 
-                if (resolvedVersion != fixedVersion) {
+                val mismatchedVersions = resolvedVersions.filter { it.version != fixedVersion }
+                if (mismatchedVersions.isNotEmpty()) {
                     errors.add(
                         Errors.TransitiveDependencies(
                             requestLibrary = targetLibrary,
-                            resolvedVersion = resolvedVersion,
+                            resolvedVersions = mismatchedVersions,
                         ),
                     )
                 }
@@ -206,22 +209,25 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
     }
 
     /**
-     * 最終的に解決されたバージョンを取得
+     * configuration ごとに最終的に解決されたバージョンを取得
      */
-    private fun getTransitiveVersion(
+    private fun getTransitiveVersions(
         configurations: List<ConfigurationSnapshot>,
         fixedGroup: String,
         fixedName: String,
-    ): String? {
-        val targetDeps = getResolvedDependencyResults(
-            configurations = configurations,
-            fixedGroup = fixedGroup,
-            fixedName = fixedName,
-        )
-        if (targetDeps.isEmpty()) return null
-        val actualVersion = targetDeps.first().selectedId.version
+    ): List<ResolvedVersion> {
+        return configurations.mapNotNull { configuration ->
+            val targetDep = getResolvedDependencyResults(
+                configurations = listOf(configuration),
+                fixedGroup = fixedGroup,
+                fixedName = fixedName,
+            ).firstOrNull() ?: return@mapNotNull null
 
-        return actualVersion
+            ResolvedVersion(
+                configuration = configuration.name,
+                version = targetDep.selectedId.version,
+            )
+        }.distinct()
     }
 
     private fun getResolvedDependencyResults(
@@ -244,10 +250,15 @@ abstract class CheckTransitiveDependenciesTask : DefaultTask() {
         val fromModule: String,
     )
 
+    data class ResolvedVersion(
+        val configuration: String,
+        val version: String,
+    )
+
     sealed interface Errors {
         data class TransitiveDependencies(
             val requestLibrary: String,
-            val resolvedVersion: String,
+            val resolvedVersions: List<ResolvedVersion>,
         ) : Errors
 
         data class MultipleVersions(
