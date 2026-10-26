@@ -25,3 +25,16 @@ jobs:
 
       - name: Build
         run: ./gradlew build
+
+      - name: Verify sample
+        working-directory: sample
+        run: ../gradlew :app-success:verifyTransitiveDependencies
+
+      - name: Verify sample detects transitive dependencies
+        working-directory: sample
+        run: |
+          if ../gradlew :app-transitive-error:verifyTransitiveDependencies; then
+            echo "::error::推移的依存によるバージョン変更を検知できていません"
+            exit 1
+          fi
+          grep -q "Transitive Dependencies Detected: com.squareup.okio:okio:3.0.0" app-transitive-error/build/reports/transitive-dependencies/report.txt

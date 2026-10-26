@@ -15,3 +15,19 @@ Android アプリケーションモジュール(`com.android.application`)向け
 | `Library Not Used` | 依存グラフに存在しない、またはどのモジュールからも直接宣言されていない |
 
 結果は `build/reports/transitive-dependencies/report.txt` に出力されます。
+
+## サンプル
+
+[`sample`](sample) はプラグインをソースから参照する Android プロジェクトです。
+
+| モジュール | 内容 |
+| --- | --- |
+| `app-success` | 指定したバージョンのまま解決され、検証が成功する |
+| `app-transitive-error` | 推移的依存でバージョンが上がり、`Transitive Dependencies Detected` で失敗する |
+
+```shell
+cd sample
+../gradlew :app-success:verifyTransitiveDependencies
+```
+
+CI ではこの2つの結果を確認しています。
