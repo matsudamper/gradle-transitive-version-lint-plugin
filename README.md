@@ -1,11 +1,11 @@
 # gradle-transitive-version-lint-plugin
 
-指定したライブラリのバージョンが、推移的依存によって意図せず変わっていないかを検証する Gradle プラグインです。
-JVM(`java`、`org.jetbrains.kotlin.jvm` など)と Android のモジュールで使えます。
+A Gradle plugin that verifies the versions of specified libraries are not unintentionally changed by transitive dependencies.
+It works with JVM (`java`, `org.jetbrains.kotlin.jvm`, etc.) and Android modules.
 
-## 使い方
+## Usage
 
-モジュールの `build.gradle.kts` にプラグインを適用し、バージョンを固定したいライブラリを指定します。
+Apply the plugin in your module's `build.gradle.kts` and specify the libraries whose versions you want to pin.
 
 ```kotlin
 plugins {
@@ -13,44 +13,44 @@ plugins {
 }
 
 checkTransitiveDependencies {
-    // group:name:version の形式で指定
+    // Specify in group:name:version format
     fixedLibraryString.addAll(
         "com.squareup.okio:okio:3.6.0",
     )
-    // Version Catalog のエントリも指定できる
+    // Version Catalog entries are also supported
     fixedLibrary.add(libs.okhttp)
 
-    // 以下は任意。値はデフォルト
+    // The following are optional. The values shown are the defaults
 
-    // 検証対象の configuration 名の正規表現。名前全体が一致したものが対象になる
-    // runtimeClasspath は JVM、.*[rR]eleaseRuntimeClasspath は Android 向け。buildscript の classpath は常に対象
+    // Regular expressions for the configuration names to verify. A configuration is verified when its whole name matches
+    // runtimeClasspath is for JVM, .*[rR]eleaseRuntimeClasspath is for Android. The buildscript classpath is always verified
     configurationNamePatterns.set(
         listOf("runtimeClasspath", ".*[rR]eleaseRuntimeClasspath"),
     )
-    // true にすると、エラーがあってもタスクを失敗させず、レポートの出力と警告のみ行う
+    // When true, the task does not fail on errors; it only writes the report and logs warnings
     ignoreFailures = false
-    // レポートの出力先
+    // Output location of the report
     reportPath = layout.buildDirectory.file("reports/transitive-dependencies/report.txt").get().asFile
 }
 ```
 
-検証を実行します。
+Run the verification.
 
 ```shell
 ./gradlew :verifyTransitiveDependencies
 ```
 
-## 検知する内容
+## What it detects
 
-`verifyTransitiveDependencies` タスクは `runtimeClasspath`(JVM)、`*ReleaseRuntimeClasspath`(Android)と buildscript の `classpath` を対象に、
-指定したライブラリごとに以下をチェックします。
+The `verifyTransitiveDependencies` task checks `runtimeClasspath` (JVM), `*ReleaseRuntimeClasspath` (Android), and the buildscript `classpath`,
+and reports the following for each specified library.
 
-| エラー | 内容 |
+| Error | Description |
 | --- | --- |
-| `Transitive Dependencies Detected` | 最終的に解決されたバージョンが指定バージョンと異なる |
-| `Multiple Versions Detected` | プロジェクト内のモジュールから異なるバージョンが直接宣言されている |
-| `Library Not Used` | 依存グラフに存在しない、またはどのモジュールからも直接宣言されていない |
+| `Transitive Dependencies Detected` | The finally resolved version differs from the specified version |
+| `Multiple Versions Detected` | Different versions are declared directly by modules in the project |
+| `Library Not Used` | The library is not in the dependency graph, or is not declared directly by any module |
 
-## サンプル
+## Samples
 
-[`sample`](sample) 
+[`sample`](sample)
