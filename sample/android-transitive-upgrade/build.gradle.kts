@@ -15,7 +15,7 @@ android {
 dependencies {
     // OkHttp 4.12.0 は okio 3.6.0 を取り込むため、直接宣言した 3.0.0 から推移的依存でバージョンが上がる。
     implementation("com.squareup.okio:okio:3.0.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.1")
 }
 
 checkTransitiveDependencies {
