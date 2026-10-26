@@ -19,7 +19,8 @@ dependencyResolutionManagement {
 rootProject.name = "sample"
 
 include(":app-success")
-include(":app-transitive-error")
+include(":app-transitive-upgrade")
+include(":app-buildscript-classpath-upgrade")
 include(":app-configuration-name-patterns")
 include(":jvm-success")
 include(":jvm-configuration-name-patterns")
