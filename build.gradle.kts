@@ -30,7 +30,7 @@ gradlePlugin {
             implementationClass = "net.matsudamper.transitiveversionlint.CheckTransitiveDependenciesPlugin"
             displayName = "Transitive Version Lint"
             description = "Verifies that specified library versions are not unintentionally changed by transitive dependencies."
-            tags = listOf("dependencies", "lint", "android", "transitive")
+            tags = listOf("dependencies", "lint", "transitive")
         }
     }
 }
