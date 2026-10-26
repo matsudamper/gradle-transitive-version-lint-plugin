@@ -18,9 +18,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "sample"
 
-include(":app-success")
-include(":app-transitive-upgrade")
-include(":app-buildscript-classpath-upgrade")
-include(":app-configuration-name-patterns")
+include(":android-success")
+include(":android-transitive-upgrade")
+include(":android-buildscript-classpath-upgrade")
+include(":android-configuration-name-patterns")
 include(":jvm-success")
 include(":jvm-configuration-name-patterns")
