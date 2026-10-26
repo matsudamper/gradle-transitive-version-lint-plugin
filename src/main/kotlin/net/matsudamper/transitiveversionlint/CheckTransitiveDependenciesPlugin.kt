@@ -42,21 +42,27 @@ class CheckTransitiveDependenciesPlugin : Plugin<Project> {
 
                 configurationSnapshots.set(
                     provider {
-                        check(pluginManager.hasPlugin("com.android.application")) {
-                            "${project.path} is not an Android application project"
+                        val patterns = thisExtension.configurationNamePatterns.get()
+                        val nameRegexes = patterns.map { Regex(it) }
+                        val runtimeConfigurations = target.configurations.filter { config ->
+                            config.isCanBeResolved && nameRegexes.any { it.matches(config.name) }
+                        }
+                        check(runtimeConfigurations.isNotEmpty()) {
+                            "${project.path} has no configuration matching $patterns. " +
+                                "Apply a JVM plugin (e.g. java, org.jetbrains.kotlin.jvm) or an Android plugin, " +
+                                "or set checkTransitiveDependencies.configurationNamePatterns."
                         }
 
                         val configurations = run {
-                            val releaseRuntimeConfigurations = target.configurations.filter { config ->
-                                config.name.endsWith("releaseRuntimeClasspath") || config.name.endsWith("ReleaseRuntimeClasspath")
-                            }
                             val pluginConfigurations = target.buildscript.configurations
                                 .plus(target.rootProject.buildscript.configurations)
                                 .filter { config ->
                                     config.name == "classpath"
                                 }
-                            releaseRuntimeConfigurations
+                            runtimeConfigurations
                                 .plus(pluginConfigurations)
+                                // ルートプロジェクトに適用した場合、buildscript の classpath が重複する
+                                .distinct()
                         }
 
                         createConfigurationSnapshots(configurations)
