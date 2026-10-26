@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     `kotlin-dsl`
     `maven-publish`
+    id("com.gradle.plugin-publish") version "2.0.0"
 }
 
 group = "net.matsudamper.transitiveversionlint"
@@ -21,10 +22,15 @@ kotlin {
 }
 
 gradlePlugin {
+    website = "https://github.com/matsudamper/gradle-transitive-version-lint-plugin"
+    vcsUrl = "https://github.com/matsudamper/gradle-transitive-version-lint-plugin.git"
     plugins {
         register("transitiveVersionLint") {
             id = "net.matsudamper.transitiveversionlint"
             implementationClass = "net.matsudamper.transitiveversionlint.CheckTransitiveDependenciesPlugin"
+            displayName = "Transitive Version Lint"
+            description = "Verifies that specified library versions are not unintentionally changed by transitive dependencies."
+            tags = listOf("dependencies", "lint", "transitive")
         }
     }
 }
