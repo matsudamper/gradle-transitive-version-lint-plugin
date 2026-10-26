@@ -19,16 +19,4 @@ Android アプリケーションモジュール(`com.android.application`)向け
 
 ## サンプル
 
-[`sample`](sample) はプラグインをソースから参照する Android プロジェクトです。
-
-| モジュール | 内容 |
-| --- | --- |
-| `app-success` | 指定したバージョンのまま解決され、検証が成功する |
-| `app-transitive-error` | ライブラリやプラグイン（AGP）の推移的依存でバージョンが上がり、`Transitive Dependencies Detected` を検知する |
-
-以下で各モジュールの検証を実行し、期待するエラーがすべて検知されているかを確認します。CI でも実行しています。
-
-```shell
-cd sample
-../gradlew verifySample
-```
+[`sample`](sample) 
