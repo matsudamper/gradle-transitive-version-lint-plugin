@@ -43,8 +43,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PUBLISH_VERSION: ${{ inputs.version }}
         run: >-
-          gh release create "$PUBLISH_VERSION"
+          gh release create "v$PUBLISH_VERSION"
           --repo "$GITHUB_REPOSITORY"
           --target "$GITHUB_SHA"
-          --title "$PUBLISH_VERSION"
+          --title "v$PUBLISH_VERSION"
           --generate-notes
